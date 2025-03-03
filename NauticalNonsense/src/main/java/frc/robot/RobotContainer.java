@@ -134,7 +134,7 @@ public class RobotContainer {
     @SuppressWarnings("resource")
     PIDController aimController = new PIDController(0.2, 0.0, 0.0);
     aimController.enableContinuousInput(-Math.PI, Math.PI);
-    new JoystickButton(m_driverController, 2)
+    new JoystickButton(m_driverController, 2) // B, AutoAim
         .whileTrue(
             Commands.startRun(
                 () -> {

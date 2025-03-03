@@ -23,6 +23,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -30,6 +32,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class DriveSubsystem extends SubsystemBase {
   private SimSwerveModule[] modules;
@@ -80,9 +83,27 @@ public class DriveSubsystem extends SubsystemBase {
   RobotConfig config;
 
   private final SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), getPositions(), new Pose2d());
+      new SwerveDrivePoseEstimator(
+          DriveConstants.kDriveKinematics,
+          m_gyro.getRotation2d(),
+          new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_rearLeft.getPosition(),
+            m_rearRight.getPosition()
+          },
+          new Pose2d());
+
+  @SuppressWarnings("rawtypes")
+  StructPublisher publisher =
+      NetworkTableInstance.getDefault().getStructTopic("pose", Pose2d.struct).publish();
 
   // Odometry class for tracking robot pose
+  @AutoLogOutput
+  public Pose2d getpose() {
+    return m_odometry.getPoseMeters();
+  }
+
   SwerveDriveOdometry m_odometry =
       new SwerveDriveOdometry(
           DriveConstants.kDriveKinematics,
@@ -189,9 +210,14 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
         });
 
-    poseEstimator.update(m_gyro.getRotation2d(), getPositions());
-
-    field.setRobotPose(getPose());
+    poseEstimator.update(
+        m_gyro.getRotation2d(),
+        new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()
+        });
   }
 
   /**

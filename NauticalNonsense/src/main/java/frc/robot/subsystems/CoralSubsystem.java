@@ -11,12 +11,12 @@ import frc.robot.Constants.CoralConstants;
 
 public class CoralSubsystem extends SubsystemBase {
   /** Creates a new CoralIntakeSubsystem. */
-  private final SparkMax elevator_motor;
+  private final SparkMax intake_motor;
 
   private final SparkMax pivot_motor;
 
   public CoralSubsystem() {
-    elevator_motor = new SparkMax(CoralConstants.kElevatorMotorPort, MotorType.kBrushless);
+    intake_motor = new SparkMax(CoralConstants.kIntakeMotorPort, MotorType.kBrushless);
     pivot_motor = new SparkMax(CoralConstants.kPivotMotorPort, MotorType.kBrushed);
   }
 
@@ -25,11 +25,11 @@ public class CoralSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void ElevatorIntake(double speed) {
-    elevator_motor.set(speed);
+  public void intakeIntake(double speed) {
+    intake_motor.set(speed);
   }
 
-  public void ElevatorPivot(double speed) {
+  public void intakePivot(double speed) {
     pivot_motor.set(speed);
   }
 
@@ -40,29 +40,29 @@ public class CoralSubsystem extends SubsystemBase {
   public void SetPivotIntake(double speed) {
     if (PivotDegree()
         < CoralConstants.IntakePosition - 1) { // Change < or > to whichever one is needed.
-      ElevatorPivot(speed);
+      intakePivot(speed);
     }
     if (PivotDegree()
         > CoralConstants.IntakePosition + 1) { // Change < or > to whichever one is needed.
-      ElevatorPivot(-speed);
+      intakePivot(-speed);
     }
   }
 
   public void SetPivotScore(double speed) {
     if (PivotDegree()
         > CoralConstants.ScoringPosition + 1) { // Change < or > to whichever one is needed.
-      ElevatorPivot(-speed);
+      intakePivot(-speed);
     } else if (PivotDegree()
         < CoralConstants.ScoringPosition - 1) { // Change < or > to whichever one is needed.
-      ElevatorPivot(speed);
+      intakePivot(speed);
     }
   }
 
   public void SetPivotIdle(double speed) {
     if (PivotDegree() > 1) {
-      ElevatorPivot(speed);
+      intakePivot(speed);
     } else if (PivotDegree() < -1) {
-      ElevatorPivot(-speed);
+      intakePivot(-speed);
     }
   }
 

@@ -182,7 +182,7 @@ public final class Constants {
   }
 
   public static final class CoralConstants {
-    public static final int kElevatorMotorPort = 0;
+    public static final int kIntakeMotorPort = 0;
     public static final int kPivotMotorPort = 0;
     public static final double kGyroLimit = 35.0;
     public static final double IntakePosition = 0.0;

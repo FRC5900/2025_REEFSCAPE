@@ -28,7 +28,7 @@ public class IntakeCoralCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_coral.ElevatorIntake(speed);
+    s_coral.intakeIntake(speed);
     s_coral.SetPivotIntake(speed);
   }
 
