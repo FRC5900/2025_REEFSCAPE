@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
@@ -14,12 +16,13 @@ import frc.robot.Constants.ElevatorConstants;
 public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
   private final SparkMax m_motor;
-
   private final RelativeEncoder m_encoder;
+  private final DigitalInput m_homeswitch;
 
   public ElevatorSubsystem() {
     m_motor = new SparkMax(ElevatorConstants.kElevatorMotorPort, MotorType.kBrushless);
     m_encoder = m_motor.getEncoder();
+    m_homeswitch = new DigitalInput(ElevatorConstants.kDigitalInput);
   }
 
   @Override
@@ -49,7 +52,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean getHomeSwitch() {
-    return false; // True when switch is detected
+    return m_homeswitch.get();
   }
 
   public void ResetEncoder() {

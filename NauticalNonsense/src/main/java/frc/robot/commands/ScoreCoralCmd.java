@@ -40,7 +40,7 @@ public class ScoreCoralCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (s_coral.CoralDetected() == false) {
+    if (s_coral.CoralCentered() == false) {
       return true;
     } else {
       return false;

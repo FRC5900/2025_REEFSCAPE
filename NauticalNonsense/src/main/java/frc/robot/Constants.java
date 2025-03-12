@@ -185,6 +185,8 @@ public final class Constants {
     public static final int kIntakeMotorPort = 3;
     public static final int kPivotMotorPort = 27;
     public static final int kPivotEncoderPort = 7;
+    public static final int kDigitalInput1 = 1;
+    public static final int kDigitalInput2 = 2;
     public static final double kGyroLimit = 0.0; // Degrees
     public static final double IntakePosition = 0.0;
     public static final double ScoringPosition = 0.0;
@@ -193,6 +195,7 @@ public final class Constants {
 
   public static final class ElevatorConstants {
     public static final int kElevatorMotorPort = 10;
+    public static final int kDigitalInput = 0;
     public static final double kEncoderMultFactor = .0632009828;
     public static final double kIntakePosition = 10.3217; // Inches All
     public static final double kBottomScorePosition = 0;
@@ -203,9 +206,10 @@ public final class Constants {
   }
 
   public static final class AlgaeConstants {
-    public static final int kIntakeMotorPort = 42; // SWAP THESE IF WRONG
+    public static final int kIntakeMotorPort = 42;
     public static final int kPivotMotorPort = 26;
-    public static final double kPivotDegreeMult = .0411375;
+    public static final int kDigitalInput = 3;
+    public static final double kPivotDegreeMult = 1;
     public static final double kUpperPivot = 0; // Degree, upper/lower bound of pivot
     public static final double kLowerPivot = 0;
   }

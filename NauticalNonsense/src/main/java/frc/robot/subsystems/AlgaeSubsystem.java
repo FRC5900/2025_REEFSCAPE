@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AlgaeConstants;
@@ -14,7 +16,7 @@ import frc.robot.Constants.AlgaeConstants;
 public class AlgaeSubsystem extends SubsystemBase {
   /** Creates a new AlgaeSubsystem. */
   private final SparkMax intakeMotor;
-
+  private final DigitalInput homeswitch;
   private final SparkMax pivotMotor;
   private final RelativeEncoder pivotAngle;
 
@@ -22,6 +24,7 @@ public class AlgaeSubsystem extends SubsystemBase {
     intakeMotor = new SparkMax(AlgaeConstants.kIntakeMotorPort, MotorType.kBrushless);
     pivotMotor = new SparkMax(AlgaeConstants.kPivotMotorPort, MotorType.kBrushless);
     pivotAngle = pivotMotor.getEncoder();
+    homeswitch = new DigitalInput(AlgaeConstants.kDigitalInput);
   }
 
   @Override
@@ -56,6 +59,6 @@ public class AlgaeSubsystem extends SubsystemBase {
   }
 
   public boolean getHomeSwitch() {
-    return false; // THINGY PUT
+    return homeswitch.get();
   }
 }
