@@ -4,26 +4,35 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
 
 public class ClimbSubsystem extends SubsystemBase {
   /** Creates a new ClimbSubsystem. */
-  public final SparkMax climb_motor;
+  private final SparkMax climb_motor;
+
+  private final AbsoluteEncoder climb_encoder;
 
   public ClimbSubsystem() {
     climb_motor = new SparkMax(ClimbConstants.kClimbMotorPort, MotorType.kBrushless);
+    climb_encoder = climb_motor.getAbsoluteEncoder();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Climb Encoder", getAbsoluteEncoder());
   }
 
-  public SparkAbsoluteEncoder getAbsoluteEncoder() {
-    return climb_motor.getAbsoluteEncoder();
+  public double getAbsoluteEncoder() {
+    return climb_encoder.getPosition();
+  }
+
+  public void Climb(double speed) {
+    climb_motor.set(speed);
   }
 }

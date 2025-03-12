@@ -154,7 +154,8 @@ public class DriveSubsystem extends SubsystemBase {
     try {
       AutoBuilder.configure(
           this::getPose, // Robot pose supplier
-          this::resetPose, // Method to reset odometry (will be called if your auto has a starting
+          this::resetOdometry, // Method to reset odometry (will be called if your auto has a
+          // starting
           // pose)
           this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
           (speeds, feedforwards) ->
@@ -218,6 +219,9 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
         });
+
+    field.setRobotPose(getPose());
+    SmartDashboard.putNumber("Timer", DriverStation.getMatchTime());
   }
 
   /**
@@ -227,11 +231,6 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
-  }
-
-  public void resetPose(Pose2d pose) {
-    System.out.println(pose);
-    m_odometry.resetPosition(m_gyro.getRotation2d(), getPositions(), pose);
   }
 
   /**

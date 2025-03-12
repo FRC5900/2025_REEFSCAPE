@@ -5,20 +5,23 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.Constants.ElevatorConstants;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ScoreCoralCmd extends Command {
-  /** Creates a new ScoreCoralCmd. */
-  private CoralSubsystem s_coral;
+public class ElevatorToPosition extends Command {
+  /** Creates a new ElevatorToBottom. */
+  private ElevatorSubsystem s_elevator;
 
   private double speed;
+  private double position;
 
-  public ScoreCoralCmd(CoralSubsystem coral, double speed) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.s_coral = coral;
+  public ElevatorToPosition(ElevatorSubsystem elevator, double speed, double position) {
+    this.s_elevator = elevator;
     this.speed = speed;
-    addRequirements(coral);
+    this.position = position;
+    addRequirements(elevator);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -28,19 +31,27 @@ public class ScoreCoralCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_coral.intakeIntake(-speed);
+    if (s_elevator.GetElevatorPos() > position + 1) {
+      s_elevator.MoveElevator(-speed);
+    } else {
+      s_elevator.MoveElevator(speed);
+    }
+
+    if (s_elevator.GetElevatorPos() > ElevatorConstants.kMaxHeight) {
+      s_elevator.MoveElevator(-speed);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_coral.intakeIntake(0);
+    s_elevator.MoveElevator(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (s_coral.CoralDetected() == false) {
+    if (s_elevator.GetElevatorPos() < position + 1 && s_elevator.GetElevatorPos() > position - 1) {
       return true;
     } else {
       return false;

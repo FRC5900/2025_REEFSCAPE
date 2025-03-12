@@ -58,12 +58,12 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 1;
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+    public static final double kMaxSpeedMetersPerSecond = 5;
+    public static final double kMaxAngularSpeed = 3 * Math.PI; // radians per second
 
     public static final double kDirectionSlewRate = 5; // radians per second
     public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
-    public static final double kRotationalSlewRate = 0.5; // percent per second (1 = 100%)
+    public static final double kRotationalSlewRate = 2; // percent per second (1 = 100%)
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(22.75);
@@ -98,17 +98,17 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, -kTrackWidth / 2);
 
     // SPARK MAX CAN IDs  swapped Left IDs with Right IDs
-    public static final int kFrontLeftDrivingCanId = 25; // 4 On Real
-    public static final int kFrontLeftTurningCanId = 2; // 8 On Real
+    public static final int kFrontLeftDrivingCanId = 29; // 22 On Real
+    public static final int kFrontLeftTurningCanId = 22; // 29 On Real
 
-    public static final int kFrontRightDrivingCanId = 4; // 25 On Real
+    public static final int kFrontRightDrivingCanId = 28; // 28 On Real
     public static final int kFrontRightTurningCanId = 8; // 8 On Real
 
-    public static final int kRearLeftDrivingCanId = 29; // 28 on Real
-    public static final int kRearLeftTurningCanId = 21; // 22 on Real
+    public static final int kRearLeftDrivingCanId = 25; // 25 on Real
+    public static final int kRearLeftTurningCanId = 21; // 21 on Real
 
-    public static final int kRearRightDrivingCanId = 28; // 29 on Real
-    public static final int kRearRightTurningCanId = 22; // 21 on Real
+    public static final int kRearRightDrivingCanId = 4; // 4 on Real
+    public static final int kRearRightTurningCanId = 2; // 2 on Real
 
     public static final boolean kGyroReversed = false;
   }
@@ -178,14 +178,35 @@ public final class Constants {
   }
 
   public static final class ClimbConstants {
-    public static final int kClimbMotorPort = 0;
+    public static final int kClimbMotorPort = 30;
   }
 
   public static final class CoralConstants {
-    public static final int kIntakeMotorPort = 0;
-    public static final int kPivotMotorPort = 0;
-    public static final double kGyroLimit = 35.0;
+    public static final int kIntakeMotorPort = 3;
+    public static final int kPivotMotorPort = 27;
+    public static final int kPivotEncoderPort = 7;
+    public static final double kGyroLimit = 0.0; // Degrees
     public static final double IntakePosition = 0.0;
     public static final double ScoringPosition = 0.0;
+    public static final double PivotEncoderMultFactor = 1.0;
+  }
+
+  public static final class ElevatorConstants {
+    public static final int kElevatorMotorPort = 10;
+    public static final double kEncoderMultFactor = .0632009828;
+    public static final double kIntakePosition = 10.3217; // Inches All
+    public static final double kBottomScorePosition = 0;
+    public static final double kLowScorePosition = 33;
+    public static final double kMidScorePosition = 49;
+    public static final double kHighScorePosition = 74;
+    public static final double kMaxHeight = 45;
+  }
+
+  public static final class AlgaeConstants {
+    public static final int kIntakeMotorPort = 42; // SWAP THESE IF WRONG
+    public static final int kPivotMotorPort = 26;
+    public static final double kPivotDegreeMult = .0411375;
+    public static final double kUpperPivot = 0; // Degree, upper/lower bound of pivot
+    public static final double kLowerPivot = 0;
   }
 }

@@ -18,19 +18,27 @@ import static frc.robot.subsystems.vision.VisionConstants.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.BadNotPathPlannerAutos.MoveLmao;
+import frc.robot.commands.FullCommands.CoralIntake;
+import frc.robot.commands.FullCommands.ScoringSequence;
+import frc.robot.commands.IntakeAlgae;
+import frc.robot.commands.IntakeCoralCmd;
 import frc.robot.commands.TurboCommand;
+import frc.robot.subsystems.AlgaeSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
@@ -46,18 +54,26 @@ public class RobotContainer {
   private final Vision vision;
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  // private final CoralSubsystem m_coral = new CoralSubsystem();
+  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+  private final CoralSubsystem m_coral = new CoralSubsystem();
+  private final AlgaeSubsystem m_algae = new AlgaeSubsystem();
+  private final ClimbSubsystem m_climb = new ClimbSubsystem();
   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final XboxController m_driverController =
       new XboxController(OperatorConstants.kDriverControllerPort);
+  // private final GenericHID m_operatorController = new GenericHID(0);
+  private final XboxController m_operatorController = new XboxController(1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     NamedCommands.registerCommand(
         "Reset Gyro", new InstantCommand(() -> m_robotDrive.zeroHeading()));
+    NamedCommands.registerCommand(
+        "Intake", new CoralIntake(m_elevator, 0.5, ElevatorConstants.kIntakePosition, m_coral));
+    NamedCommands.registerCommand("Score", new ScoringSequence(m_coral, 0.5));
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -113,6 +129,16 @@ public class RobotContainer {
                     true,
                     true),
             m_robotDrive));
+
+    m_algae.setDefaultCommand(
+        new RunCommand(() -> m_algae.PivotAlgae(m_operatorController.getLeftY() / 5), m_algae));
+
+    m_coral.setDefaultCommand(
+        new RunCommand(() -> m_coral.intakePivot(m_operatorController.getRightX() / 4), m_coral));
+
+    /*m_elevator.setDefaultCommand(
+    new RunCommand(
+        () -> m_elevator.MoveElevator(m_operatorController.getRightY()), m_elevator));*/
   }
 
   /**
@@ -130,8 +156,60 @@ public class RobotContainer {
         .onTrue(new TurboCommand(m_robotDrive, true))
         .onFalse(new TurboCommand(m_robotDrive, false));
 
+    new JoystickButton(m_driverController, 2) // B, Climb
+        .whileTrue(new RunCommand(() -> m_climb.Climb(0.5), m_climb))
+        .whileFalse(new RunCommand(() -> m_climb.Climb(0), m_climb));
+
+    new JoystickButton(m_driverController, 8) // Menu, Reset Elevator Encoder
+        .whileTrue(new RunCommand(() -> m_elevator.ResetEncoder(), m_elevator));
+
+    new JoystickButton(m_driverController, 7) // Back, Reset Algae Encoder
+        .whileTrue(new RunCommand(() -> m_algae.ResetEncoder(), m_algae));
+
+    new JoystickButton(m_driverController, 3) // X, Reverse Climb
+        .whileTrue(new RunCommand(() -> m_climb.Climb(-0.5), m_climb))
+        .whileFalse(new RunCommand(() -> m_climb.Climb(0), m_climb));
+
+    new JoystickButton(m_operatorController, 4) // Y, Elevator Up
+        .whileTrue(new RunCommand(() -> m_elevator.MoveElevator(1), m_elevator))
+        .whileFalse(new RunCommand(() -> m_elevator.MoveElevator(0), m_elevator));
+
+    new JoystickButton(m_operatorController, 1) // A, Elevator Down
+        .whileTrue(new RunCommand(() -> m_elevator.MoveElevator(-1), m_elevator))
+        .whileFalse(new RunCommand(() -> m_elevator.MoveElevator(0), m_elevator));
+
+    /*new JoystickButton(m_operatorController, 1) // 0, Elevator to L1
+        .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kBottomScorePosition));
+
+    new JoystickButton(m_operatorController, 2) // 1, Elevator to L2
+        .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kLowScorePosition));
+
+    new JoystickButton(m_operatorController, 3) // 4, Elevator to L3
+        .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kMidScorePosition));
+
+    new JoystickButton(m_operatorController, 4) // 7, Elevator to L4
+        .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kHighScorePosition));*/
+
+    new JoystickButton(m_operatorController, 6) // Enter, Score Coral
+        .whileTrue(new ScoringSequence(m_coral, 0.5));
+
+    new JoystickButton(m_operatorController, 5) // +, Intake Coral
+        .whileTrue(new IntakeCoralCmd(m_coral, -0.25));
+
+    new JoystickButton(m_operatorController, 7) // 3, Intake Algae
+        .whileTrue(new IntakeAlgae(m_algae, -0.5));
+
+    new JoystickButton(m_operatorController, 8) // 6, Shoot Algae
+        .whileTrue(new IntakeAlgae(m_algae, 0.5));
+
+    /*new JoystickButton(m_operatorController, 9) // 2, Pivot Algae Down
+        .whileTrue(new PivotAlgae(m_algae, -0.5));
+
+    new JoystickButton(m_operatorController, 10) // 5, Pivot Algae Up
+        .whileTrue(new PivotAlgae(m_algae, 0.5));*/
+
     // Auto aim command example
-    @SuppressWarnings("resource")
+    /*@SuppressWarnings("resource")
     PIDController aimController = new PIDController(0.2, 0.0, 0.0);
     aimController.enableContinuousInput(-Math.PI, Math.PI);
     new JoystickButton(m_driverController, 2) // B, AutoAim
@@ -148,7 +226,7 @@ public class RobotContainer {
                       true,
                       true);
                 },
-                m_robotDrive));
+                m_robotDrive));/* */
   }
 
   /**
@@ -157,6 +235,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
+    return new MoveLmao(m_robotDrive, .75);
   }
 }

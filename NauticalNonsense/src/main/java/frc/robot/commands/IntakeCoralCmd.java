@@ -29,12 +29,15 @@ public class IntakeCoralCmd extends Command {
   @Override
   public void execute() {
     s_coral.intakeIntake(speed);
-    s_coral.SetPivotIntake(speed);
+    // s_coral.SetPivotIntake(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    s_coral.intakeIntake(0);
+    s_coral.SetPivotIntake(0);
+  }
 
   // Returns true when the command should end.
   @Override
