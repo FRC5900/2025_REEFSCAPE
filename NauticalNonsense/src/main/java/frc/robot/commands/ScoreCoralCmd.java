@@ -28,7 +28,7 @@ public class ScoreCoralCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_coral.intakeIntake(-speed);
+    s_coral.intakeIntake(speed);
   }
 
   // Called once the command ends or is interrupted.
@@ -40,7 +40,7 @@ public class ScoreCoralCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (s_coral.CoralCentered() == false) {
+    if (s_coral.CoralDetected() == false) {
       return true;
     } else {
       return false;

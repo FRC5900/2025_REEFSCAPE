@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,6 +15,7 @@ import frc.robot.Constants.CoralConstants;
 public class CoralSubsystem extends SubsystemBase {
   /** Creates a new CoralIntakeSubsystem. */
   private final SparkMax intake_motor;
+
   private final DutyCycleEncoder encoder;
   private final SparkMax pivot_motor;
   private final DigitalInput input1;
@@ -35,6 +35,8 @@ public class CoralSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Pivot Degree", PivotDegree());
     SmartDashboard.putBoolean("Coral Centered", CoralCentered());
     SmartDashboard.putBoolean("Coral Detected", CoralDetected());
+    SmartDashboard.putBoolean("Sensor 1", input1.get());
+    SmartDashboard.putBoolean("Sensor 2", input2.get());
   }
 
   public void intakeIntake(double speed) {
@@ -79,19 +81,17 @@ public class CoralSubsystem extends SubsystemBase {
   }
 
   public boolean CoralCentered() {
-    if (input1.get() == true && input2.get() == true){
+    if (input1.get() == false && input2.get() == false) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }
 
-  public boolean CoralDetected(){
-    if (input1.get() == true || input2.get() == true){
+  public boolean CoralDetected() {
+    if (input1.get() == false || input2.get() == false) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }

@@ -33,6 +33,7 @@ import frc.robot.commands.FullCommands.CoralIntake;
 import frc.robot.commands.FullCommands.ScoringSequence;
 import frc.robot.commands.IntakeAlgae;
 import frc.robot.commands.IntakeCoralCmd;
+import frc.robot.commands.ScoreCoralCmd;
 import frc.robot.commands.TurboCommand;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -191,7 +192,7 @@ public class RobotContainer {
         .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kHighScorePosition));*/
 
     new JoystickButton(m_operatorController, 6) // Enter, Score Coral
-        .whileTrue(new ScoringSequence(m_coral, 0.5));
+        .whileTrue(new ScoreCoralCmd(m_coral, -0.25));
 
     new JoystickButton(m_operatorController, 5) // +, Intake Coral
         .whileTrue(new IntakeCoralCmd(m_coral, -0.25));
