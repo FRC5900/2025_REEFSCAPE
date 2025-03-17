@@ -15,12 +15,19 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionReal;
+import frc.robot.subsystems.vision.Vision;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -31,8 +38,12 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
+  private VisionReal vision = new VisionReal();
+  private DriveSubsystem drive = new DriveSubsystem();
 
   public Robot() {
+
+    Pathfinding.setPathfinder(new LocalADStar());
     // Record metadata
     /*Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -87,6 +98,16 @@ public class Robot extends LoggedRobot {
     // Optionally switch the thread to high priority to improve loop
     // timing (see the template project documentation for details)
     // Threads.setCurrentThreadPriority(true, 99);
+
+    var visionEst = vision.getEstimatedGlobalPose();
+        visionEst.ifPresent(
+                est -> {
+                    // Change our trust in the measurement based on the tags we can see
+                    var estStdDevs = vision.getEstimationStdDevs();
+
+                    drive.addVisionMeasurement(
+                            est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                });
 
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled commands, running already-scheduled commands, removing

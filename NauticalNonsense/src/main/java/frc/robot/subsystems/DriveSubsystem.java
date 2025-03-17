@@ -12,9 +12,11 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -27,11 +29,13 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -80,19 +84,11 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
-  RobotConfig config;
+  Supplier<Pose2d> m_poseSupplier = () -> getPose();
 
-  private final SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(
-          DriveConstants.kDriveKinematics,
-          m_gyro.getRotation2d(),
-          new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-          },
-          new Pose2d());
+  private final SwerveDrivePoseEstimator poseEstimator;
+
+  RobotConfig config;
 
   @SuppressWarnings("rawtypes")
   StructPublisher publisher =
@@ -116,6 +112,18 @@ public class DriveSubsystem extends SubsystemBase {
           });
 
   public DriveSubsystem() {
+
+    var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
+    var visionStdDevs = VecBuilder.fill(1, 1, 1);
+
+  poseEstimator =
+      new SwerveDrivePoseEstimator(
+          DriveConstants.kDriveKinematics,
+          m_gyro.getRotation2d(),
+          getPositions(),
+          new Pose2d(),
+          stateStdDevs,
+          visionStdDevs);
 
     SmartDashboard.putData(
         "Swerve",
@@ -187,8 +195,6 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
-
-    SmartDashboard.putData("Field", field);
   }
 
   public SwerveModulePosition[] getPositions() {
@@ -198,6 +204,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
     return positions;
   }
+
+  public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds) {
+    poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
+}
 
   @Override
   public void periodic() {
@@ -212,16 +222,12 @@ public class DriveSubsystem extends SubsystemBase {
         });
 
     poseEstimator.update(
-        m_gyro.getRotation2d(),
-        new SwerveModulePosition[] {
-          m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
-          m_rearLeft.getPosition(),
-          m_rearRight.getPosition()
-        });
+        m_gyro.getRotation2d(), getPositions());
 
-    field.setRobotPose(getPose());
+    field.setRobotPose(poseEstimator.getEstimatedPosition());
+
     SmartDashboard.putNumber("Timer", DriverStation.getMatchTime());
+    SmartDashboard.putData("Field", field);
   }
 
   /**
@@ -248,6 +254,10 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
         },
         pose);
+  }
+
+  public Rotation2d getRotation() {
+    return getPose().getRotation();
   }
 
   /**

@@ -13,8 +13,6 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.vision.VisionConstants.*;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
@@ -31,6 +29,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BadNotPathPlannerAutos.MoveLmao;
 import frc.robot.commands.FullCommands.CoralIntake;
 import frc.robot.commands.FullCommands.ScoringSequence;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.IntakeAlgae;
 import frc.robot.commands.IntakeCoralCmd;
 import frc.robot.commands.ScoreCoralCmd;
@@ -39,6 +38,7 @@ import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.DriveTarget;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
@@ -52,13 +52,13 @@ import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Vision vision;
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
   private final CoralSubsystem m_coral = new CoralSubsystem();
   private final AlgaeSubsystem m_algae = new AlgaeSubsystem();
   private final ClimbSubsystem m_climb = new ClimbSubsystem();
+  private final DriveTarget m_target = new DriveTarget();
   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -84,7 +84,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    switch (Constants.currentMode) {
+    /*switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         vision =
@@ -114,7 +114,7 @@ public class RobotContainer {
         vision =
             new Vision(m_robotDrive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
-    }
+    }*/
 
     // Configure the button bindings
     configureButtonBindings();
