@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -16,7 +17,6 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -29,13 +29,11 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
-import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -84,8 +82,6 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
-  Supplier<Pose2d> m_poseSupplier = () -> getPose();
-
   private final SwerveDrivePoseEstimator poseEstimator;
 
   RobotConfig config;
@@ -97,7 +93,7 @@ public class DriveSubsystem extends SubsystemBase {
   // Odometry class for tracking robot pose
   @AutoLogOutput
   public Pose2d getpose() {
-    return m_odometry.getPoseMeters();
+    return poseEstimator.getEstimatedPosition();
   }
 
   SwerveDriveOdometry m_odometry =
@@ -116,14 +112,14 @@ public class DriveSubsystem extends SubsystemBase {
     var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
     var visionStdDevs = VecBuilder.fill(1, 1, 1);
 
-  poseEstimator =
-      new SwerveDrivePoseEstimator(
-          DriveConstants.kDriveKinematics,
-          m_gyro.getRotation2d(),
-          getPositions(),
-          new Pose2d(),
-          stateStdDevs,
-          visionStdDevs);
+    poseEstimator =
+        new SwerveDrivePoseEstimator(
+            DriveConstants.kDriveKinematics,
+            m_gyro.getRotation2d(),
+            getModulePositions(),
+            new Pose2d(),
+            stateStdDevs,
+            visionStdDevs);
 
     SmartDashboard.putData(
         "Swerve",
@@ -152,6 +148,7 @@ public class DriveSubsystem extends SubsystemBase {
 
           builder.addDoubleProperty("Robot Angle", () -> -Math.toRadians(m_gyro.getYaw()), null);
         });
+
     try {
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
@@ -205,9 +202,14 @@ public class DriveSubsystem extends SubsystemBase {
     return positions;
   }
 
-  public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds) {
-    poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
-}
+  public SwerveModulePosition[] getModulePositions() {
+    return new SwerveModulePosition[] {
+      modules[0].getPosition(),
+      modules[1].getPosition(),
+      modules[2].getPosition(),
+      modules[3].getPosition()
+    };
+  }
 
   @Override
   public void periodic() {
@@ -221,8 +223,7 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
         });
 
-    poseEstimator.update(
-        m_gyro.getRotation2d(), getPositions());
+    poseEstimator.update(m_gyro.getRotation2d(), getModulePositions());
 
     field.setRobotPose(poseEstimator.getEstimatedPosition());
 

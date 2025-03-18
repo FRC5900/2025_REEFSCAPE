@@ -29,21 +29,18 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BadNotPathPlannerAutos.MoveLmao;
 import frc.robot.commands.FullCommands.CoralIntake;
 import frc.robot.commands.FullCommands.ScoringSequence;
-import frc.robot.commands.DriveToPose;
 import frc.robot.commands.IntakeAlgae;
 import frc.robot.commands.IntakeCoralCmd;
 import frc.robot.commands.ScoreCoralCmd;
 import frc.robot.commands.TurboCommand;
+import frc.robot.commands.VisionUpdateThingy;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveTarget;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.subsystems.VisionReal;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -59,6 +56,7 @@ public class RobotContainer {
   private final AlgaeSubsystem m_algae = new AlgaeSubsystem();
   private final ClimbSubsystem m_climb = new ClimbSubsystem();
   private final DriveTarget m_target = new DriveTarget();
+  private final VisionReal m_vision = new VisionReal();
   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -83,6 +81,8 @@ public class RobotContainer {
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    new VisionUpdateThingy(m_robotDrive, m_vision);
 
     /*switch (Constants.currentMode) {
       case REAL:
@@ -198,10 +198,10 @@ public class RobotContainer {
         .whileTrue(new IntakeCoralCmd(m_coral, -0.25));
 
     new JoystickButton(m_operatorController, 7) // 3, Intake Algae
-        .whileTrue(new IntakeAlgae(m_algae, -0.5));
+        .whileTrue(new IntakeAlgae(m_algae, -1));
 
     new JoystickButton(m_operatorController, 8) // 6, Shoot Algae
-        .whileTrue(new IntakeAlgae(m_algae, 0.5));
+        .whileTrue(new IntakeAlgae(m_algae, 1));
 
     /*new JoystickButton(m_operatorController, 9) // 2, Pivot Algae Down
         .whileTrue(new PivotAlgae(m_algae, -0.5));
