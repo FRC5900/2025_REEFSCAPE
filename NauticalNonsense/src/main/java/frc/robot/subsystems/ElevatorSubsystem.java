@@ -47,8 +47,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public double GetElevatorPos() {
-    return m_encoder.getPosition()
-        * ElevatorConstants.kEncoderMultFactor; // ADD AN ENCODER HERE IN INCHES
+    return m_encoder.getPosition() * ElevatorConstants.kEncoderMultFactor;
   }
 
   public boolean getHomeSwitch() {

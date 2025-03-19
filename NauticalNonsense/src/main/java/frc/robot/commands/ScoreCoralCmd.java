@@ -39,18 +39,22 @@ public class ScoreCoralCmd extends Command {
   @Override
   public void end(boolean interrupted) {
     s_coral.intakeIntake(0);
+    timer.stop();
+    timer.reset();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     if (s_coral.CoralDetected() == false) {
       timer.start();
-      if (timer.get() > 1) {
-        return true;
-      } else {
-        return false;
-      }
+    } else {
+      timer.reset();
+    }
+
+    if (timer.get() > 1) {
+      return true;
     } else {
       return false;
     }

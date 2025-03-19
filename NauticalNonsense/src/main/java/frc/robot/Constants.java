@@ -198,11 +198,11 @@ public final class Constants {
     public static final int kDigitalInput = 0;
     public static final double kEncoderMultFactor = .0632009828;
     public static final double kIntakePosition = 10.3217; // Inches All
-    public static final double kBottomScorePosition = 0;
-    public static final double kLowScorePosition = 33;
-    public static final double kMidScorePosition = 49;
-    public static final double kHighScorePosition = 74;
-    public static final double kMaxHeight = 45;
+    public static final double kBottomScorePosition = 0; //L1
+    public static final double kLowScorePosition = 11.56; //L2
+    public static final double kMidScorePosition = 24.1; //L3
+    public static final double kHighScorePosition = 50.46; //L4
+    public static final double kMaxHeight = 52;
   }
 
   public static final class AlgaeConstants {

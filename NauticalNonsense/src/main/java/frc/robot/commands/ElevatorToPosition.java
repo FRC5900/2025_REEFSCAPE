@@ -31,7 +31,7 @@ public class ElevatorToPosition extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (s_elevator.GetElevatorPos() > position + 1) {
+    if (s_elevator.GetElevatorPos() > position) {
       s_elevator.MoveElevator(-speed);
     } else {
       s_elevator.MoveElevator(speed);
@@ -51,7 +51,7 @@ public class ElevatorToPosition extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (s_elevator.GetElevatorPos() < position + 1 && s_elevator.GetElevatorPos() > position - 1) {
+    if (s_elevator.GetElevatorPos() < position && s_elevator.GetElevatorPos() > position) {
       return true;
     } else {
       return false;
