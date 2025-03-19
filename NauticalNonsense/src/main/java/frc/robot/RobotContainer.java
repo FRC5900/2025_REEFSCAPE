@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.vision.VisionConstants.*;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
@@ -29,18 +31,20 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BadNotPathPlannerAutos.MoveLmao;
 import frc.robot.commands.FullCommands.CoralIntake;
 import frc.robot.commands.FullCommands.ScoringSequence;
+import frc.robot.commands.CameraDeltaFeedback;
 import frc.robot.commands.IntakeAlgae;
 import frc.robot.commands.IntakeCoralCmd;
 import frc.robot.commands.ScoreCoralCmd;
 import frc.robot.commands.TurboCommand;
-import frc.robot.commands.VisionUpdateThingy;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.DriveTarget;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.VisionReal;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -49,14 +53,13 @@ import frc.robot.subsystems.VisionReal;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private final Vision vision;
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
   private final CoralSubsystem m_coral = new CoralSubsystem();
   private final AlgaeSubsystem m_algae = new AlgaeSubsystem();
   private final ClimbSubsystem m_climb = new ClimbSubsystem();
-  private final DriveTarget m_target = new DriveTarget();
-  private final VisionReal m_vision = new VisionReal();
   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -82,9 +85,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    new VisionUpdateThingy(m_robotDrive, m_vision);
-
-    /*switch (Constants.currentMode) {
+    switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         vision =
@@ -114,7 +115,7 @@ public class RobotContainer {
         vision =
             new Vision(m_robotDrive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
-    }*/
+    }
 
     // Configure the button bindings
     configureButtonBindings();
@@ -198,10 +199,10 @@ public class RobotContainer {
         .whileTrue(new IntakeCoralCmd(m_coral, -0.25));
 
     new JoystickButton(m_operatorController, 7) // 3, Intake Algae
-        .whileTrue(new IntakeAlgae(m_algae, -1));
+        .whileTrue(new IntakeAlgae(m_algae, -0.5));
 
     new JoystickButton(m_operatorController, 8) // 6, Shoot Algae
-        .whileTrue(new IntakeAlgae(m_algae, 1));
+        .whileTrue(new IntakeAlgae(m_algae, 0.5));
 
     /*new JoystickButton(m_operatorController, 9) // 2, Pivot Algae Down
         .whileTrue(new PivotAlgae(m_algae, -0.5));
@@ -239,4 +240,36 @@ public class RobotContainer {
     // return autoChooser.getSelected();
     return new MoveLmao(m_robotDrive, .75);
   }
+
+  private void configureQuickDeltaButtons() {
+    // Create the alignment commands with different side targets
+    Command centerAlignCommand = new CameraDeltaFeedback("center");
+    Command leftAlignCommand = new CameraDeltaFeedback("left");
+    Command rightAlignCommand = new CameraDeltaFeedback("right");
+    
+    // Button to start center alignment
+    new JoystickButton(m_driverController, 3) // X button
+        .onTrue(centerAlignCommand);
+    
+    // Button to start left alignment
+    new JoystickButton(m_driverController, 1) // A button
+        .onTrue(leftAlignCommand);  
+    
+    // Button to start right alignment
+    new JoystickButton(m_driverController, 4) // Y button
+        .onTrue(rightAlignCommand);
+    
+    // Button to cancel alignment
+    new JoystickButton(m_driverController, 2) // B button
+        .onTrue(new InstantCommand(() -> {
+            centerAlignCommand.cancel();
+            leftAlignCommand.cancel();
+            rightAlignCommand.cancel();
+            SmartDashboard.putString("Align/Status", "ALIGNMENT CANCELLED");
+        }));
+    
+    // Toggle button that keeps the alignment tool running
+    new JoystickButton(m_driverController, 7) // Back button
+        .toggleOnTrue(new CameraDeltaFeedback("center"));
+}
 }
