@@ -81,7 +81,7 @@ public class CoralSubsystem extends SubsystemBase {
   }
 
   public boolean CoralCentered() {
-    if (input1.get() == false && input2.get() == false) {
+    if (input1.get() == true && input2.get() == true) {
       return true;
     } else {
       return false;
@@ -89,7 +89,7 @@ public class CoralSubsystem extends SubsystemBase {
   }
 
   public boolean CoralDetected() {
-    if (input1.get() == false || input2.get() == false) {
+    if (input1.get() == true || input2.get() == true) {
       return true;
     } else {
       return false;

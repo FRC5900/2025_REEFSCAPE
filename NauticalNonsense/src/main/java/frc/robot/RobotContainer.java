@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BadNotPathPlannerAutos.MoveLmao;
+import frc.robot.commands.ElevatorToPosition;
 import frc.robot.commands.FullCommands.CoralIntake;
 import frc.robot.commands.FullCommands.ScoringSequence;
 import frc.robot.commands.IntakeAlgae;
@@ -171,15 +172,15 @@ public class RobotContainer {
         .whileTrue(new RunCommand(() -> m_climb.Climb(-0.5), m_climb))
         .whileFalse(new RunCommand(() -> m_climb.Climb(0), m_climb));
 
-    new JoystickButton(m_operatorController, 4) // Y, Elevator Up
+    /*new JoystickButton(m_operatorController, 4) // Y, Elevator Up
         .whileTrue(new RunCommand(() -> m_elevator.MoveElevator(1), m_elevator))
         .whileFalse(new RunCommand(() -> m_elevator.MoveElevator(0), m_elevator));
 
     new JoystickButton(m_operatorController, 1) // A, Elevator Down
         .whileTrue(new RunCommand(() -> m_elevator.MoveElevator(-1), m_elevator))
-        .whileFalse(new RunCommand(() -> m_elevator.MoveElevator(0), m_elevator));
+        .whileFalse(new RunCommand(() -> m_elevator.MoveElevator(0), m_elevator));*/
 
-    /*new JoystickButton(m_operatorController, 1) // 0, Elevator to L1
+    new JoystickButton(m_operatorController, 1) // 0, Elevator to L1
         .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kBottomScorePosition));
 
     new JoystickButton(m_operatorController, 2) // 1, Elevator to L2
@@ -189,19 +190,19 @@ public class RobotContainer {
         .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kMidScorePosition));
 
     new JoystickButton(m_operatorController, 4) // 7, Elevator to L4
-        .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kHighScorePosition));*/
+        .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kHighScorePosition));
 
     new JoystickButton(m_operatorController, 6) // Enter, Score Coral
-        .whileTrue(new ScoreCoralCmd(m_coral, -0.25));
+        .whileTrue(new ScoreCoralCmd(m_coral, 0.25));
 
     new JoystickButton(m_operatorController, 5) // +, Intake Coral
-        .whileTrue(new IntakeCoralCmd(m_coral, -0.25));
+        .whileTrue(new IntakeCoralCmd(m_coral, 0.25));
 
     new JoystickButton(m_operatorController, 7) // 3, Intake Algae
-        .whileTrue(new IntakeAlgae(m_algae, -0.5));
+        .whileTrue(new IntakeAlgae(m_algae, -1.0));
 
     new JoystickButton(m_operatorController, 8) // 6, Shoot Algae
-        .whileTrue(new IntakeAlgae(m_algae, 0.5));
+        .whileTrue(new IntakeAlgae(m_algae, 1.0));
 
     /*new JoystickButton(m_operatorController, 9) // 2, Pivot Algae Down
         .whileTrue(new PivotAlgae(m_algae, -0.5));

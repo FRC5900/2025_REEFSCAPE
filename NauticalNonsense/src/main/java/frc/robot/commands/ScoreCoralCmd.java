@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralSubsystem;
 
@@ -12,6 +13,7 @@ public class ScoreCoralCmd extends Command {
   /** Creates a new ScoreCoralCmd. */
   private CoralSubsystem s_coral;
 
+  private Timer timer;
   private double speed;
 
   public ScoreCoralCmd(CoralSubsystem coral, double speed) {
@@ -23,7 +25,9 @@ public class ScoreCoralCmd extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timer.reset();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -41,7 +45,12 @@ public class ScoreCoralCmd extends Command {
   @Override
   public boolean isFinished() {
     if (s_coral.CoralDetected() == false) {
-      return true;
+      timer.start();
+      if (timer.get() > 1) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
