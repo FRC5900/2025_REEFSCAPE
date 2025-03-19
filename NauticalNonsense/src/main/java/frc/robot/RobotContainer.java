@@ -158,9 +158,9 @@ public class RobotContainer {
         .onTrue(new TurboCommand(m_robotDrive, true))
         .onFalse(new TurboCommand(m_robotDrive, false));
 
-    new JoystickButton(m_driverController, 2) // B, Climb
+    /*new JoystickButton(m_driverController, 2) // B, Climb
         .whileTrue(new RunCommand(() -> m_climb.Climb(0.5), m_climb))
-        .whileFalse(new RunCommand(() -> m_climb.Climb(0), m_climb));
+        .whileFalse(new RunCommand(() -> m_climb.Climb(0), m_climb));*/
 
     new JoystickButton(m_driverController, 8) // Menu, Reset Elevator Encoder
         .whileTrue(new RunCommand(() -> m_elevator.ResetEncoder(), m_elevator));
@@ -168,9 +168,9 @@ public class RobotContainer {
     new JoystickButton(m_driverController, 7) // Back, Reset Algae Encoder
         .whileTrue(new RunCommand(() -> m_algae.ResetEncoder(), m_algae));
 
-    new JoystickButton(m_driverController, 3) // X, Reverse Climb
+    /*new JoystickButton(m_driverController, 3) // X, Reverse Climb
         .whileTrue(new RunCommand(() -> m_climb.Climb(-0.5), m_climb))
-        .whileFalse(new RunCommand(() -> m_climb.Climb(0), m_climb));
+        .whileFalse(new RunCommand(() -> m_climb.Climb(0), m_climb));*/
 
     new JoystickButton(m_operatorController, 4) // Y, Elevator Up
         .whileTrue(new RunCommand(() -> m_elevator.MoveElevator(1), m_elevator))
@@ -229,20 +229,7 @@ public class RobotContainer {
                       true);
                 },
                 m_robotDrive));/* */
-  }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // return autoChooser.getSelected();
-    return new MoveLmao(m_robotDrive, .75);
-  }
-
-  private void configureQuickDeltaButtons() {
-    // Create the alignment commands with different side targets
     Command centerAlignCommand = new CameraDeltaFeedback("center");
     Command leftAlignCommand = new CameraDeltaFeedback("left");
     Command rightAlignCommand = new CameraDeltaFeedback("right");
@@ -271,5 +258,15 @@ public class RobotContainer {
     // Toggle button that keeps the alignment tool running
     new JoystickButton(m_driverController, 7) // Back button
         .toggleOnTrue(new CameraDeltaFeedback("center"));
-}
+  }
+
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    // return autoChooser.getSelected();
+    return new MoveLmao(m_robotDrive, .75);
+  }
 }
