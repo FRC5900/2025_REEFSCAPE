@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BadNotPathPlannerAutos.MoveLmao;
+import frc.robot.commands.CameraDeltaFeedback;
 import frc.robot.commands.ElevatorToPosition;
 import frc.robot.commands.FullCommands.CoralIntake;
 import frc.robot.commands.FullCommands.ScoringSequence;
@@ -140,7 +141,7 @@ public class RobotContainer {
 
     m_elevator.setDefaultCommand(
         new RunCommand(
-            () -> m_elevator.MoveElevator(m_operatorController.getRightY()), m_elevator));
+            () -> m_elevator.MoveElevator(-m_operatorController.getRightY()), m_elevator));
 
     /*m_elevator.setDefaultCommand(
     new RunCommand(
@@ -169,7 +170,7 @@ public class RobotContainer {
     new JoystickButton(m_driverController, 8) // Menu, Reset Elevator Encoder
         .whileTrue(new RunCommand(() -> m_elevator.ResetEncoder(), m_elevator));
 
-    new JoystickButton(m_driverController, 7) // Back, Reset Algae Encoder
+    new JoystickButton(m_driverController, 10) // Back, Reset Algae Encoder
         .whileTrue(new RunCommand(() -> m_algae.ResetEncoder(), m_algae));
 
     new JoystickButton(m_driverController, 3) // X, Reverse Climb
@@ -233,6 +234,35 @@ public class RobotContainer {
                       true);
                 },
                 m_robotDrive));/* */
+
+    Command centerAlignCommand = new CameraDeltaFeedback("center");
+    Command leftAlignCommand = new CameraDeltaFeedback("left");
+    Command rightAlignCommand = new CameraDeltaFeedback("right");
+    
+    // Button to start center alignment
+    new JoystickButton(m_driverController, 3) // X button
+        .onTrue(centerAlignCommand);
+    
+    // Button to start left alignment
+    new JoystickButton(m_driverController, 1) // A button
+        .onTrue(leftAlignCommand);  
+    
+    // Button to start right alignment
+    new JoystickButton(m_driverController, 4) // Y button
+        .onTrue(rightAlignCommand);
+    
+    // Button to cancel alignment
+    new JoystickButton(m_driverController, 2) // B button
+        .onTrue(new InstantCommand(() -> {
+            centerAlignCommand.cancel();
+            leftAlignCommand.cancel();
+            rightAlignCommand.cancel();
+            SmartDashboard.putString("Align/Status", "ALIGNMENT CANCELLED");
+        }));
+    
+    // Toggle button that keeps the alignment tool running
+    new JoystickButton(m_driverController, 7) // Back button
+        .toggleOnTrue(new CameraDeltaFeedback("center"));
   }
 
   /**
