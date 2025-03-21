@@ -30,12 +30,9 @@ public class AlgaeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (getHomeSwitch() == true) {
-      ResetEncoder();
-    }
 
     SmartDashboard.putNumber("Algae Pivot Angle", PivotAngle());
-    SmartDashboard.putBoolean("Algae Home Switch", getHomeSwitch());
+    SmartDashboard.putBoolean("Algae Detected", AlgaeDetected());
   }
 
   public void IntakeAlgae(double speed) {
@@ -58,7 +55,7 @@ public class AlgaeSubsystem extends SubsystemBase {
     pivotAngle.setPosition(0);
   }
 
-  public boolean getHomeSwitch() {
+  public boolean AlgaeDetected() {
     if (homeswitch.get() == true) {
       return false;
     } else {

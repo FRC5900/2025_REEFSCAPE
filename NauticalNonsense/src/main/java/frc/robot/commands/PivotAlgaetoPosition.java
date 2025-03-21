@@ -5,21 +5,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.AlgaeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ScoreCoralCmd extends Command {
-  /** Creates a new ScoreCoralCmd. */
-  private CoralSubsystem s_coral;
-
-  // private Timer timer;
+public class PivotAlgaetoPosition extends Command {
+  private AlgaeSubsystem s_algae;
   private double speed;
-
-  public ScoreCoralCmd(CoralSubsystem coral, double speed) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.s_coral = coral;
+  /** Creates a new PivotAlgae. */
+  public PivotAlgaetoPosition(AlgaeSubsystem algae, double speed) {
+    this.s_algae = algae;
     this.speed = speed;
-    addRequirements(coral);
+    addRequirements(algae);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -28,38 +25,17 @@ public class ScoreCoralCmd extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    s_coral.intakeIntake(speed);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_coral.intakeIntake(0);
-    /*timer.stop();
-    timer.reset();*/
+    s_algae.PivotAlgae(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
-    if (s_coral.CoralSensor2() == false && s_coral.CoralSensor1() == false) {
-      return true;
-    } else {
-      return false;
-    }
-
-    /*if (s_coral.CoralDetected() == false) {
-      timer.start();
-    } else {
-      timer.reset();
-    }
-
-    if (timer.get() > 1) {
-      return true;
-    } else {
-      return false;
-    }*/
+    return false;
   }
 }

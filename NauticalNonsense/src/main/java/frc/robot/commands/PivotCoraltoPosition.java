@@ -5,19 +5,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.AlgaeConstants;
-import frc.robot.subsystems.AlgaeSubsystem;
+import frc.robot.subsystems.CoralPivotSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class PivotAlgae extends Command {
-  private AlgaeSubsystem s_algae;
-  private double speed;
-  /** Creates a new PivotAlgae. */
-  public PivotAlgae(AlgaeSubsystem algae, double speed) {
-    this.s_algae = algae;
-    this.speed = speed;
-    addRequirements(algae);
+public class PivotCoraltoPosition extends Command {
+  /** Creates a new PivotCoral. */
+  private final CoralPivotSubsystem s_coral;
+
+  private final double speed;
+  private final double pos;
+
+  public PivotCoraltoPosition(CoralPivotSubsystem coral, double speed, double pos) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.s_coral = coral;
+    this.speed = speed;
+    this.pos = pos;
+    addRequirements(coral);
   }
 
   // Called when the command is initially scheduled.
@@ -27,24 +30,22 @@ public class PivotAlgae extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (s_algae.PivotAngle() > AlgaeConstants.kUpperPivot - 1) {
-      s_algae.PivotAlgae(-Math.abs(speed));
-    } else if (s_algae.PivotAngle() < AlgaeConstants.kUpperPivot + 1) {
-      s_algae.PivotAlgae(Math.abs(speed));
-    } else {
-      s_algae.PivotAlgae(speed);
-    }
+    s_coral.SetPivotIntake(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_algae.PivotAlgae(0);
+    s_coral.intakePivot(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (s_coral.PivotDegree() > pos - 1 && s_coral.PivotDegree() < pos + 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

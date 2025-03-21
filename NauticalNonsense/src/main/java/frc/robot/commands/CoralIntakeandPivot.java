@@ -4,18 +4,25 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.CoralPivotSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ScoringSequence extends SequentialCommandGroup {
-  /** Creates a new ScoringSequence. */
-  public ScoringSequence(CoralPivotSubsystem coralpiv, CoralSubsystem coral, double speed) {
+public class CoralIntakeandPivot extends ParallelCommandGroup {
+  /** Creates a new AutoIntake. */
+  public CoralIntakeandPivot(
+      double Intakespeed,
+      double Pivotspeed,
+      double position,
+      CoralSubsystem coral,
+      CoralPivotSubsystem coralpiv) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new SetCoralScoreCmd(coralpiv, speed), new ScoreCoralCmd(coral, speed));
+    addCommands(
+        new PivotCoraltoPosition(coralpiv, -Pivotspeed, position),
+        new IntakeCoralCmd(coral, Intakespeed));
   }
 }

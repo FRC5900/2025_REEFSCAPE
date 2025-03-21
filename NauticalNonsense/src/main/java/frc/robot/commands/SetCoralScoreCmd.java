@@ -6,16 +6,16 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralConstants;
-import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.CoralPivotSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class SetCoralScoreCmd extends Command {
   /** Creates a new SetCoralScoreCmd. */
-  private CoralSubsystem s_coral;
+  private CoralPivotSubsystem s_coral;
 
   private double speed;
 
-  public SetCoralScoreCmd(CoralSubsystem coral, double speed) {
+  public SetCoralScoreCmd(CoralPivotSubsystem coral, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.s_coral = coral;
     this.speed = speed;
@@ -35,14 +35,14 @@ public class SetCoralScoreCmd extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_coral.SetPivotScore(0);
+    s_coral.intakePivot(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (s_coral.PivotDegree()
-        > CoralConstants.ScoringPosition) { // Change < or > depending on which way gyro is
+    if (s_coral.PivotDegree() > CoralConstants.ScoringPosition - 1
+        || s_coral.PivotDegree() < CoralConstants.ScoringPosition + 1) {
       return true;
     } else {
       return false;

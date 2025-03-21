@@ -188,9 +188,10 @@ public final class Constants {
     public static final int kDigitalInput1 = 1;
     public static final int kDigitalInput2 = 2;
     public static final double kGyroLimit = 0.0; // Degrees
-    public static final double IntakePosition = 0.0;
+    public static final double IntakePosition = -50.0;
     public static final double ScoringPosition = 0.0;
-    public static final double PivotEncoderMultFactor = 1.0;
+    public static final double PivotEncoderMultFactor = 360.0;
+    public static final double PivotOffset = 282.2;
   }
 
   public static final class ElevatorConstants {
@@ -198,11 +199,11 @@ public final class Constants {
     public static final int kDigitalInput = 0;
     public static final double kEncoderMultFactor = .0632009828;
     public static final double kIntakePosition = 10.3217; // Inches All
-    public static final double kBottomScorePosition = 0; //L1
-    public static final double kLowScorePosition = 11.56; //L2
-    public static final double kMidScorePosition = 24.1; //L3
-    public static final double kHighScorePosition = 50.46; //L4
-    public static final double kMaxHeight = 52;
+    public static final double kBottomScorePosition = 0; // L1
+    public static final double kLowScorePosition = 11; // L2
+    public static final double kMidScorePosition = 25.3; // L3
+    public static final double kHighScorePosition = 50.3; // L4
+    public static final double kMaxHeight = 50;
   }
 
   public static final class AlgaeConstants {

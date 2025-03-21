@@ -36,13 +36,12 @@ public class IntakeCoralCmd extends Command {
   @Override
   public void end(boolean interrupted) {
     s_coral.intakeIntake(0);
-    s_coral.SetPivotIntake(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (s_coral.CoralCentered() == true) {
+    if (s_coral.CoralSensor1() == true) {
       return true;
     } else {
       return false;

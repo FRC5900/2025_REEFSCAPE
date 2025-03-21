@@ -26,11 +26,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BadNotPathPlannerAutos.MoveLmao;
 import frc.robot.commands.ElevatorToPosition;
-import frc.robot.commands.FullCommands.CoralIntake;
+import frc.robot.commands.FullCommands.IntakeSequence;
 import frc.robot.commands.FullCommands.ScoringSequence;
 import frc.robot.commands.IntakeAlgae;
 import frc.robot.commands.IntakeCoralCmd;
@@ -38,6 +39,7 @@ import frc.robot.commands.ScoreCoralCmd;
 import frc.robot.commands.TurboCommand;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.CoralPivotSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -58,6 +60,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
   private final CoralSubsystem m_coral = new CoralSubsystem();
+  private final CoralPivotSubsystem m_coralpiv = new CoralPivotSubsystem();
   private final AlgaeSubsystem m_algae = new AlgaeSubsystem();
   private final ClimbSubsystem m_climb = new ClimbSubsystem();
   private final SendableChooser<Command> autoChooser;
@@ -73,9 +76,8 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Reset Gyro", new InstantCommand(() -> m_robotDrive.zeroHeading()));
-    NamedCommands.registerCommand(
-        "Intake", new CoralIntake(m_elevator, 0.5, ElevatorConstants.kIntakePosition, m_coral));
-    NamedCommands.registerCommand("Score", new ScoringSequence(m_coral, 0.5));
+    NamedCommands.registerCommand("Intake", new IntakeCoralCmd(m_coral, 0.25));
+    NamedCommands.registerCommand("Score", new ScoringSequence(m_coral, m_coralpiv, 0.5));
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -136,11 +138,12 @@ public class RobotContainer {
         new RunCommand(() -> m_algae.PivotAlgae(m_operatorController.getLeftY() / 5), m_algae));
 
     m_coral.setDefaultCommand(
-        new RunCommand(() -> m_coral.intakePivot(m_operatorController.getRightX() / 4), m_coral));
-
-    m_elevator.setDefaultCommand(
         new RunCommand(
-            () -> m_elevator.MoveElevator(m_operatorController.getRightY()), m_elevator));
+            () -> m_coralpiv.intakePivot(m_operatorController.getRightX() / 4), m_coral));
+
+    /*m_elevator.setDefaultCommand(
+    new RunCommand(
+        () -> m_elevator.MoveElevator(-m_operatorController.getRightY()), m_elevator));*/
 
     /*m_elevator.setDefaultCommand(
     new RunCommand(
@@ -185,7 +188,8 @@ public class RobotContainer {
         .whileFalse(new RunCommand(() -> m_elevator.MoveElevator(0), m_elevator));*/
 
     new JoystickButton(m_operatorController, 1) // 0, Elevator to L1
-        .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kBottomScorePosition));
+        .whileTrue(new RunCommand(() -> m_elevator.MoveElevator(-1), m_elevator))
+        .whileFalse(new RunCommand(() -> m_elevator.MoveElevator(0), m_elevator));
 
     new JoystickButton(m_operatorController, 2) // 1, Elevator to L2
         .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kLowScorePosition));
@@ -200,7 +204,17 @@ public class RobotContainer {
         .whileTrue(new ScoreCoralCmd(m_coral, 0.25));
 
     new JoystickButton(m_operatorController, 5) // +, Intake Coral
-        .whileTrue(new IntakeCoralCmd(m_coral, 0.25));
+        .whileTrue(
+            new IntakeSequence(
+                0.25,
+                0.1,
+                CoralConstants.IntakePosition,
+                CoralConstants.ScoringPosition,
+                m_coral,
+                m_coralpiv));
+
+    /*new JoystickButton(m_operatorController, 5) // +, Intake Coral
+    .whileTrue(new IntakeCoralCmd(m_coral, 0.25));*/
 
     new JoystickButton(m_operatorController, 7) // 3, Intake Algae
         .whileTrue(new IntakeAlgae(m_algae, -1.0));
