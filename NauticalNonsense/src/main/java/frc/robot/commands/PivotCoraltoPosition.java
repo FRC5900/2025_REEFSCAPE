@@ -30,7 +30,11 @@ public class PivotCoraltoPosition extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_coral.SetPivotIntake(speed);
+    if (s_coral.PivotDegree() > pos) {
+      s_coral.intakePivot(-speed);
+    } else {
+      s_coral.intakePivot(speed);
+    }
   }
 
   // Called once the command ends or is interrupted.

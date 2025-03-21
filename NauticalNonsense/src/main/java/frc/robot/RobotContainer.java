@@ -139,7 +139,7 @@ public class RobotContainer {
 
     m_coralpiv.setDefaultCommand(
         new RunCommand(
-            () -> m_coralpiv.intakePivot(m_operatorController.getRightX() / 4), m_coral));
+            () -> m_coralpiv.intakePivot(m_operatorController.getRightX() / 4), m_coralpiv));
 
     /*m_elevator.setDefaultCommand(
     new RunCommand(
