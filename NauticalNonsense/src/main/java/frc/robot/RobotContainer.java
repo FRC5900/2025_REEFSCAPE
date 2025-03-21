@@ -209,7 +209,7 @@ public class RobotContainer {
                 0.25,
                 0.1,
                 CoralConstants.IntakePosition,
-                CoralConstants.ScoringPosition,
+                CoralConstants.LevelPosition,
                 m_coral,
                 m_coralpiv));
 

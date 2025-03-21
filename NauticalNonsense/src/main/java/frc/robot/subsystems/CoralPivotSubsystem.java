@@ -50,10 +50,10 @@ public class CoralPivotSubsystem extends SubsystemBase {
 
   public void SetPivotScore(double speed) {
     if (PivotDegree()
-        > CoralConstants.ScoringPosition + 1) { // Change < or > to whichever one is needed.
+        > CoralConstants.LevelPosition + 1) { // Change < or > to whichever one is needed.
       intakePivot(-speed);
     } else if (PivotDegree()
-        < CoralConstants.ScoringPosition - 1) { // Change < or > to whichever one is needed.
+        < CoralConstants.LevelPosition - 1) { // Change < or > to whichever one is needed.
       intakePivot(speed);
     }
   }

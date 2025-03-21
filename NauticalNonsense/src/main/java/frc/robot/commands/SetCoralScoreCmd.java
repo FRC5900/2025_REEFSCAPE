@@ -41,8 +41,8 @@ public class SetCoralScoreCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (s_coral.PivotDegree() > CoralConstants.ScoringPosition - 1
-        || s_coral.PivotDegree() < CoralConstants.ScoringPosition + 1) {
+    if (s_coral.PivotDegree() > CoralConstants.LevelPosition - 1
+        || s_coral.PivotDegree() < CoralConstants.LevelPosition + 1) {
       return true;
     } else {
       return false;
