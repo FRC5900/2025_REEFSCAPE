@@ -30,7 +30,7 @@ import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BadNotPathPlannerAutos.MoveLmao;
-import frc.robot.commands.ElevatorToPosition;
+import frc.robot.commands.ElevatorAndPivotPosition;
 import frc.robot.commands.FullCommands.IntakeSequence;
 import frc.robot.commands.FullCommands.ScoringSequence;
 import frc.robot.commands.IntakeAlgae;
@@ -137,7 +137,7 @@ public class RobotContainer {
     m_algae.setDefaultCommand(
         new RunCommand(() -> m_algae.PivotAlgae(m_operatorController.getLeftY() / 5), m_algae));
 
-    m_coral.setDefaultCommand(
+    m_coralpiv.setDefaultCommand(
         new RunCommand(
             () -> m_coralpiv.intakePivot(m_operatorController.getRightX() / 4), m_coral));
 
@@ -192,13 +192,34 @@ public class RobotContainer {
         .whileFalse(new RunCommand(() -> m_elevator.MoveElevator(0), m_elevator));
 
     new JoystickButton(m_operatorController, 2) // 1, Elevator to L2
-        .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kLowScorePosition));
+        .whileTrue(
+            new ElevatorAndPivotPosition(
+                m_elevator,
+                m_coralpiv,
+                1,
+                0.1,
+                ElevatorConstants.kLowScorePosition,
+                CoralConstants.LevelPosition));
 
     new JoystickButton(m_operatorController, 3) // 4, Elevator to L3
-        .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kMidScorePosition));
+        .whileTrue(
+            new ElevatorAndPivotPosition(
+                m_elevator,
+                m_coralpiv,
+                1,
+                0.1,
+                ElevatorConstants.kMidScorePosition,
+                CoralConstants.LevelPosition));
 
     new JoystickButton(m_operatorController, 4) // 7, Elevator to L4
-        .whileTrue(new ElevatorToPosition(m_elevator, 1, ElevatorConstants.kHighScorePosition));
+        .whileTrue(
+            new ElevatorAndPivotPosition(
+                m_elevator,
+                m_coralpiv,
+                1,
+                0.1,
+                ElevatorConstants.kHighScorePosition,
+                CoralConstants.L4Position));
 
     new JoystickButton(m_operatorController, 6) // Enter, Score Coral
         .whileTrue(new ScoreCoralCmd(m_coral, 0.25));

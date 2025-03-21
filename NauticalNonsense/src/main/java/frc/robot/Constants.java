@@ -190,6 +190,7 @@ public final class Constants {
     public static final double kGyroLimit = 0.0; // Degrees
     public static final double IntakePosition = -50.0;
     public static final double LevelPosition = 0.0;
+    public static final double L4Position = -20.5;
     public static final double PivotEncoderMultFactor = 360.0;
     public static final double PivotOffset = 282.2;
   }

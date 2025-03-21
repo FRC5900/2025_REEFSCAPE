@@ -5,15 +5,23 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.subsystems.CoralPivotSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ElevatorL4Cmd extends ParallelCommandGroup {
+public class ElevatorAndPivotPosition extends ParallelCommandGroup {
   /** Creates a new ElevatorL4Cmd. */
-  public ElevatorL4Cmd() {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    addCommands();
+  public ElevatorAndPivotPosition(
+      ElevatorSubsystem elevator,
+      CoralPivotSubsystem coralpiv,
+      double elevatorspeed,
+      double pivotspeed,
+      double elevatorpos,
+      double pivotpos) {
+    addCommands(
+        new ElevatorToPosition(elevator, elevatorspeed, elevatorpos),
+        new PivotCoraltoPosition(coralpiv, -pivotspeed, pivotpos));
   }
 }
