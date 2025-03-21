@@ -214,5 +214,8 @@ public final class Constants {
     public static final double kPivotDegreeMult = 1;
     public static final double kUpperPivot = 0; // Degree, upper/lower bound of pivot
     public static final double kLowerPivot = 0;
+    public static final double kIntakePosition = 0.0;
+    public static final double kHoldPosition = 0.0;
+    public static final double kScorePosition = 0.0;
   }
 }

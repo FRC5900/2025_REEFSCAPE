@@ -11,10 +11,12 @@ import frc.robot.subsystems.AlgaeSubsystem;
 public class PivotAlgaetoPosition extends Command {
   private AlgaeSubsystem s_algae;
   private double speed;
+  private double pos;
   /** Creates a new PivotAlgae. */
-  public PivotAlgaetoPosition(AlgaeSubsystem algae, double speed) {
+  public PivotAlgaetoPosition(AlgaeSubsystem algae, double speed, double pos) {
     this.s_algae = algae;
     this.speed = speed;
+    this.pos = pos;
     addRequirements(algae);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -25,7 +27,13 @@ public class PivotAlgaetoPosition extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (s_algae.PivotAngle() > pos) {
+      s_algae.PivotAlgae(-speed);
+    } else {
+      s_algae.PivotAlgae(speed);
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -36,6 +44,10 @@ public class PivotAlgaetoPosition extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (s_algae.PivotAngle() > pos - 1 && s_algae.PivotAngle() < pos + 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

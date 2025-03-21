@@ -231,8 +231,10 @@ public class RobotContainer {
                 0.1,
                 CoralConstants.IntakePosition,
                 CoralConstants.LevelPosition,
+                ElevatorConstants.kIntakePosition,
                 m_coral,
-                m_coralpiv));
+                m_coralpiv,
+                m_elevator));
 
     /*new JoystickButton(m_operatorController, 5) // +, Intake Coral
     .whileTrue(new IntakeCoralCmd(m_coral, 0.25));*/

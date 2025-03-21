@@ -57,9 +57,9 @@ public class AlgaeSubsystem extends SubsystemBase {
 
   public boolean AlgaeDetected() {
     if (homeswitch.get() == true) {
-      return false;
-    } else {
       return true;
+    } else {
+      return false;
     }
   }
 }

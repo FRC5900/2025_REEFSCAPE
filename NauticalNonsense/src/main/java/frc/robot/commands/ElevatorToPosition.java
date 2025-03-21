@@ -51,7 +51,7 @@ public class ElevatorToPosition extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (s_elevator.GetElevatorPos() < position && s_elevator.GetElevatorPos() > position) {
+    if (s_elevator.GetElevatorPos() < position + 1 && s_elevator.GetElevatorPos() > position - 1) {
       return true;
     } else {
       return false;

@@ -9,6 +9,7 @@ import frc.robot.commands.CoralIntakeandPivot;
 import frc.robot.commands.PivotCoraltoPosition;
 import frc.robot.subsystems.CoralPivotSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -20,12 +21,15 @@ public class IntakeSequence extends SequentialCommandGroup {
       double Pivotspeed,
       double intakeposition,
       double scoreposition,
+      double elevatorposition,
       CoralSubsystem coral,
-      CoralPivotSubsystem coralpiv) {
+      CoralPivotSubsystem coralpiv,
+      ElevatorSubsystem elevator) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new CoralIntakeandPivot(0.25, 0.1, intakeposition, coral, coralpiv),
+        new CoralIntakeandPivot(
+            0.25, 0.1, intakeposition, elevatorposition, coral, coralpiv, elevator),
         new PivotCoraltoPosition(coralpiv, -Pivotspeed, scoreposition));
   }
 }

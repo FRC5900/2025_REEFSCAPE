@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.CoralPivotSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -16,13 +17,16 @@ public class CoralIntakeandPivot extends ParallelCommandGroup {
   public CoralIntakeandPivot(
       double Intakespeed,
       double Pivotspeed,
-      double position,
+      double pivotposition,
+      double elevatorposition,
       CoralSubsystem coral,
-      CoralPivotSubsystem coralpiv) {
+      CoralPivotSubsystem coralpiv,
+      ElevatorSubsystem elevator) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new PivotCoraltoPosition(coralpiv, -Pivotspeed, position),
+        new PivotCoraltoPosition(coralpiv, -Pivotspeed, pivotposition),
         new IntakeCoralCmd(coral, Intakespeed));
+    new ElevatorToPosition(elevator, 1, elevatorposition);
   }
 }
