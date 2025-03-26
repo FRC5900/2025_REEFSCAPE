@@ -26,17 +26,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.AlgaeConstants;
 import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BadNotPathPlannerAutos.MoveLmao;
 import frc.robot.commands.ElevatorAndPivotPosition;
+import frc.robot.commands.FullCommands.AglaeSequence;
+import frc.robot.commands.FullCommands.AlgaeShootSequence;
 import frc.robot.commands.FullCommands.IntakeSequence;
 import frc.robot.commands.FullCommands.ScoringSequence;
-import frc.robot.commands.IntakeAlgae;
 import frc.robot.commands.IntakeCoralCmd;
 import frc.robot.commands.ScoreCoralCmd;
 import frc.robot.commands.TurboCommand;
+import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralPivotSubsystem;
@@ -62,6 +65,7 @@ public class RobotContainer {
   private final CoralSubsystem m_coral = new CoralSubsystem();
   private final CoralPivotSubsystem m_coralpiv = new CoralPivotSubsystem();
   private final AlgaeSubsystem m_algae = new AlgaeSubsystem();
+  private final AlgaeIntakeSubsystem m_algaeint = new AlgaeIntakeSubsystem();
   private final ClimbSubsystem m_climb = new ClimbSubsystem();
   private final SendableChooser<Command> autoChooser;
 
@@ -81,6 +85,8 @@ public class RobotContainer {
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
+
+    m_algae.ResetEncoder();
 
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
@@ -222,7 +228,7 @@ public class RobotContainer {
                 CoralConstants.L4Position));
 
     new JoystickButton(m_operatorController, 6) // Enter, Score Coral
-        .whileTrue(new ScoreCoralCmd(m_coral, 0.25));
+        .whileTrue(new ScoreCoralCmd(m_coral, 0.4));
 
     new JoystickButton(m_operatorController, 5) // +, Intake Coral
         .whileTrue(
@@ -240,10 +246,19 @@ public class RobotContainer {
     .whileTrue(new IntakeCoralCmd(m_coral, 0.25));*/
 
     new JoystickButton(m_operatorController, 7) // 3, Intake Algae
-        .whileTrue(new IntakeAlgae(m_algae, -1.0));
+        .whileTrue(
+            new AglaeSequence(
+                m_algae,
+                m_algaeint,
+                m_elevator,
+                -.75,
+                .25,
+                AlgaeConstants.kIntakePosition,
+                AlgaeConstants.kHoldPosition,
+                10));
 
     new JoystickButton(m_operatorController, 8) // 6, Shoot Algae
-        .whileTrue(new IntakeAlgae(m_algae, 1.0));
+        .whileTrue(new AlgaeShootSequence(m_algae, m_algaeint, .75, .25, 8));
 
     /*new JoystickButton(m_operatorController, 9) // 2, Pivot Algae Down
         .whileTrue(new PivotAlgae(m_algae, -0.5));

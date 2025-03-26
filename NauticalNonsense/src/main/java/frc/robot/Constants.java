@@ -188,7 +188,7 @@ public final class Constants {
     public static final int kDigitalInput1 = 1;
     public static final int kDigitalInput2 = 2;
     public static final double kGyroLimit = 0.0; // Degrees
-    public static final double IntakePosition = -50.0;
+    public static final double IntakePosition = -45.0;
     public static final double LevelPosition = 0.0;
     public static final double L4Position = -20.5;
     public static final double PivotEncoderMultFactor = 360.0;
@@ -199,11 +199,11 @@ public final class Constants {
     public static final int kElevatorMotorPort = 10;
     public static final int kDigitalInput = 0;
     public static final double kEncoderMultFactor = .0632009828;
-    public static final double kIntakePosition = 10.3217; // Inches All
+    public static final double kIntakePosition = 4.3; // Inches All
     public static final double kBottomScorePosition = 0; // L1
-    public static final double kLowScorePosition = 11; // L2
-    public static final double kMidScorePosition = 25.3; // L3
-    public static final double kHighScorePosition = 50.3; // L4
+    public static final double kLowScorePosition = 6.2; // L2
+    public static final double kMidScorePosition = 17.14; // L3
+    public static final double kHighScorePosition = 35.76; // L4
     public static final double kMaxHeight = 50;
   }
 
@@ -212,10 +212,8 @@ public final class Constants {
     public static final int kPivotMotorPort = 26;
     public static final int kDigitalInput = 3;
     public static final double kPivotDegreeMult = 1;
-    public static final double kUpperPivot = 0; // Degree, upper/lower bound of pivot
-    public static final double kLowerPivot = 0;
-    public static final double kIntakePosition = 0.0;
-    public static final double kHoldPosition = 0.0;
+    public static final double kIntakePosition = 34.42;
+    public static final double kHoldPosition = -2.8;
     public static final double kScorePosition = 0.0;
   }
 }

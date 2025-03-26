@@ -46,7 +46,7 @@ public class PivotCoraltoPosition extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (s_coral.PivotDegree() > pos - 1 && s_coral.PivotDegree() < pos + 1) {
+    if (s_coral.PivotDegree() > pos - .5 && s_coral.PivotDegree() < pos + .5) {
       return true;
     } else {
       return false;

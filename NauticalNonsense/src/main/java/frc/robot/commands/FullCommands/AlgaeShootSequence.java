@@ -5,31 +5,24 @@
 package frc.robot.commands.FullCommands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.AlgaePivotAndIntake;
 import frc.robot.commands.PivotAlgaetoPosition;
+import frc.robot.commands.ShootAlgaeCmd;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.AlgaeSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AglaeSequence extends SequentialCommandGroup {
-  /** Creates a new AglaeSequence. */
-  public AglaeSequence(
+public class AlgaeShootSequence extends SequentialCommandGroup {
+  /** Creates a new AlgaeShootSequence. */
+  public AlgaeShootSequence(
       AlgaeSubsystem algae,
-      AlgaeIntakeSubsystem algaeint,
-      ElevatorSubsystem elevator,
+      AlgaeIntakeSubsystem alageint,
       double speed,
-      double pivotspeed,
-      double intakepos,
-      double holdpos,
-      double elevatorpos) {
+      double pivspeed,
+      double pos) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-        new AlgaePivotAndIntake(
-            algaeint, algae, elevator, speed, pivotspeed, intakepos, elevatorpos),
-        new PivotAlgaetoPosition(algae, pivotspeed, holdpos));
+    addCommands(new ShootAlgaeCmd(alageint, speed), new PivotAlgaetoPosition(algae, pivspeed, pos));
   }
 }

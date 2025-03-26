@@ -29,7 +29,7 @@ public class IntakeSequence extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new CoralIntakeandPivot(
-            0.25, 0.1, intakeposition, elevatorposition, coral, coralpiv, elevator),
+            Intakespeed, Pivotspeed, intakeposition, elevatorposition, coral, coralpiv, elevator),
         new PivotCoraltoPosition(coralpiv, -Pivotspeed, scoreposition));
   }
 }

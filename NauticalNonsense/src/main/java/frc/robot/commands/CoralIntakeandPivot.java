@@ -26,7 +26,7 @@ public class CoralIntakeandPivot extends ParallelCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new PivotCoraltoPosition(coralpiv, -Pivotspeed, pivotposition),
-        new IntakeCoralCmd(coral, Intakespeed));
-    new ElevatorToPosition(elevator, 1, elevatorposition);
+        new IntakeCoralCmd(coral, Intakespeed),
+        new ElevatorToPosition(elevator, 1, elevatorposition));
   }
 }
